@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private ListView listView;
     private ArrayAdapter<String> arrayAdapter;
     private ArrayList<String> list_of_rooms=new ArrayList<>();
+    //get root reference of the real time databas
+    // ...so that we can fetch its child(root name)
     private DatabaseReference root= FirebaseDatabase.getInstance().getReference().getRoot();
 
     @Override
@@ -63,33 +65,45 @@ public class MainActivity extends AppCompatActivity {
         room_name=(EditText)findViewById(R.id.et_room_name);
         listView=(ListView)findViewById(R.id.listview);
 
+
+        //Array list for store active chat rooms
         arrayAdapter=new ArrayAdapter<String>(this,R.layout.list_item,list_of_rooms);
         listView.setAdapter(arrayAdapter);
 
+        //After running the app , first will take user name ,without user name , we can t proceed on app
         request_user_name();
 
 
+        //add rooms in data base
         add_room.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Inside data base , every thing store as Key - Value pair.So will use Map for maintain such record
                 Map<String,Object> map=new HashMap<String, Object>();
-                map.put(room_name.getText().toString(),"");
+                map.put(room_name.getText().toString(),"");//here 2nd paramenter is null bz we need only chat room as root element
+                //update room name in database
                 root.updateChildren(map);
 
 
             }
         });
 
+
+        //handle event on database update
         root.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //to avoid dublicacy , will use Set.Her two Room name will be same but they can store diff values
                 Set<String> set=new HashSet<String>();
                 Iterator iterator=dataSnapshot.getChildren().iterator();
+                //read database line by line
                 while (iterator.hasNext())
                 {
                     set.add(((DataSnapshot)iterator.next()).getKey());
                 }
+                //clear old data of list view
                 list_of_rooms.clear();
+                //load new data in list view
                 list_of_rooms.addAll(set);
 
                 arrayAdapter.notifyDataSetChanged();
@@ -101,10 +115,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //handle click of list view item
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //After clink on any Room name(Group name) user will enter on chat page
                 Intent intent=new Intent(getApplicationContext(),Chat_Room.class);
+                //will send room name and user name to chat page
                 intent.putExtra("room_name",((TextView)view).getText().toString());
                 intent.putExtra("user_name",name);
                 startActivity(intent);

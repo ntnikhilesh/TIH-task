@@ -40,28 +40,39 @@ public class Chat_Room extends AppCompatActivity{
         btn_send_msg=(Button)findViewById(R.id.button_send_msg);
         et_input_msg=(EditText)findViewById(R.id.et_input_msg);
         tv_chat_conv=(TextView)findViewById(R.id.tv_chat_conv);
+        //recive room name and user name from Main activity
         user_name=getIntent().getExtras().get("user_name").toString();
         room_name=getIntent().getExtras().get("room_name").toString();
+        //set title of this screen as Room name
         setTitle("Room - "+room_name);
 
+        //here we are storing child ref(Room name ref) as root...so that we can fetch its child(Primery Key)
+        //We are not storing (name , msg) directly as child of Room name bz may be more that one group have same name but diff values.
+        //so for this will use Primery key and stote (name,msg ) as child of this unique key
         root=FirebaseDatabase.getInstance().getReference().child(room_name);
         btn_send_msg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Map<String,Object> map=new HashMap<String, Object>();
-                temp_key = root.push().getKey();
+                //getting Primery key of perticular msg.Each (name-msg) pair store under unique primary key
+                temp_key = root.push().getKey();//this key will auto generate
                 root.updateChildren(map);
 
+                //here we are storing child ref(Primary  Key) as root...so that we can fetch its child(name and msg)
                 DatabaseReference message_root=root.child(temp_key);
+                //Again used Has map to store name and msg values
                 Map<String,Object> map2=new HashMap<String, Object>();
                 map2.put("name",user_name);
                 map2.put("msg",et_input_msg.getText().toString());
                 Log.d("msg",map2.toString());
+                //store name and msg on database as a child of above unique key
                 message_root.updateChildren(map2);
             }
         });
 
+        //See data changes on screen.Fetch updated data and populate on chat screen.
+        //Now root will contain root refrence of (name-msg) ie reference of Primary Key
         root.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
