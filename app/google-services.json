@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "629148885631",
+    "firebase_url": "https://tih-task.firebaseio.com",
+    "project_id": "tih-task",
+    "storage_bucket": "tih-task.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:629148885631:android:f641d1b3c0fc41f7",
+        "android_client_info": {
+          "package_name": "com.example.dell.tih_task"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "629148885631-9pk68bsa3k705dq1cqacfkevsrltslnk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpCv5rjml1HIyOmkzG3Al5SlM5f1ju5ow"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
